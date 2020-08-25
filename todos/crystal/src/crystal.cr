@@ -1,5 +1,7 @@
-# TODO: Write documentation for `Crystal`
+require "http/server"
 require "ecr"
+# TODO: Write documentation for `Crystal`
+
 
 print "I have started running!"
 
@@ -49,7 +51,7 @@ class TodoList
 end
 
 # The todo 'API' - global (for now)
-# $todos = TodoList.new
+TODOS = TodoList.new
 
 # Here's a simple top level router - could be a class if it implements 'call'
 
