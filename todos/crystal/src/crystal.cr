@@ -2,13 +2,10 @@ require "http/server"
 require "ecr"
 # TODO: Write documentation for `Crystal`
 
-
-print "I have started running!"
-
 class Todo
   getter :name, :done, :id
 
-  def initialize(name, id)
+  def initialize(name : String, id : Int32)
     print "I'm initializing a Todo!"
     @name = name
     @done = false
@@ -20,6 +17,13 @@ class Todo
     self
   end
 end
+# remove these tests in prod
+b = TodoList.new
+b.add ("first_todo")
+c = b.toggle 0
+pp! b
+b.delete 0
+pp! b
 
 class TodoList
   getter :todos
