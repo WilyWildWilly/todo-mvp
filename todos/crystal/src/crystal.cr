@@ -59,3 +59,54 @@ TODOS = TodoList.new
 
 # Here's a simple top level router - could be a class if it implements 'call'
 
+def routes(request)
+  case request.request_method
+  when "GET"
+    show_todos_handler
+  when "POST"
+    item = request[:item]
+    name = item
+    id = item.to_i32
+    case request.path
+    when "/done"
+      TODOS.toggle id
+    when "/not-done"
+      TODOS.toggle id
+    when "/delete"
+      TODOS.delete id
+    else
+      TODOS.add name
+    end
+    redirect "/"
+  else
+    redirect "/"
+  end
+end
+
+def show_todos_handler
+  response = HTTP::Server.new do | context |
+    context.response.status = 200
+    context.response.headers.add("Content-Type": "text/html")
+    context.response.write(TODOS.render)
+    context.response
+  end
+end
+
+# to readapt from ruby
+def redirect(url)
+  response = HTTP::Server.new do | context |
+    context.response.redirect(url)
+    context.response
+  end
+end
+
+def new_server
+  app = Proc.new do |env|
+    request = Rack::Request.new(env)
+    routes(request).finish
+  end
+  # to statically serve CSS
+  Rack::Static.new(app, :urls => ["/static"])
+end
+
+Rack::Handler::WEBrick.run new_server, Port: 3000
